@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- styles -->
+    <link href="/src/css/style.css" rel="stylesheet">
+
+    <style>
+        .none {
+            -webkit-filter: none;
+            filter: none;
+        }
+        .blur {
+            -webkit-filter: blur(3px);
+            filter: blur(3px);
+        }
+        .grayscale {
+            -webkit-filter: grayscale(1);
+            filter: grayscale(1);
+        }
+        .invert {
+            -webkit-filter: invert(1);
+            filter: invert(1);
+        }
+        .sepia {
+            -webkit-filter: sepia(1);
+            filter: sepia(1);
+        }
+
+        button#snapshot {
+            margin: 0 10px 25px 0;
+            width: 110px;
+        }
+
+        video {
+            object-fit: cover;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div id="container">
+
+    <video autoplay></video>
+
+    <label for="select">Filter: </label>
+    <select id="filter">
+        <option value="none">None</option>
+        <option value="blur">Blur</option>
+        <option value="grayscale">Grayscale</option>
+        <option value="invert">Invert</option>
+        <option value="sepia">Sepia</option>
+    </select>
+
+    <button id="snapshot">Take snapshot</button>
+
+    <canvas></canvas>
+
+    <p>Draw a frame from the getUserMedia video stream onto the canvas element, then apply CSS filters.</p>
+
+    <p>The variables <code>canvas</code>, <code>video</code> and <code>stream</code> are in global scope, so you can inspect them from the console.</p>
+
+</div>
+
+<script src="/src/js/adapter.js" ></script>
+<script>
+    /*
+     *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+     *
+     *  Use of this source code is governed by a BSD-style license
+     *  that can be found in the LICENSE file in the root of the source
+     *  tree.
+     */
+
+    'use strict';
+
+
+    var snapshotButton = document.querySelector('#snapshot');
+    var filterSelect = document.querySelector('#filter');
+
+    var video = window.video = document.querySelector('video');
+    var canvas = window.canvas = document.querySelector('canvas');
+    canvas.width = 480;
+    canvas.height = 360;
+
+    snapshotButton.onclick = function () {
+        canvas.className = filterSelect.value;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    };
+
+    filterSelect.onchange = function(){
+        video.className = filterSelect.value;
+    };
+
+    var constraints = {
+        audio: false,
+        video: true
+    };
+
+    navigator.getUserMedia(constraints, function(stream){
+        window.stream = stream;
+        video.srcObject = stream;
+    }, function (err) {
+        console.log(err);
+    });
+
+</script>
+
+</body>
+</html>
